@@ -30,9 +30,9 @@ else:
 st.title("New Card Limit Calculator / 新規カード上限計算")
 
 # 昨日Inputにかかった時間
-input_time = st.text_input("昨日Inputに使った時間 / Yesterday's Input time (例: 4:44)", "4:44")
+input_time = st.text_input("昨日Inputに使った時間 / Yesterday's Input time (例: 2:00)", "2:00")
 # 今日Ankiにかかった時間
-anki_time = st.text_input("昨日暗記カードにかかった時間 / Yesterday's Anki time (例: 1:11)", "1:11")
+anki_time = st.text_input("昨日暗記カードにかかった時間 / Yesterday's Anki time (例: 0:30)", "0:30")
 # Input:Anki 比率
 ratio_input = st.text_input("理想のInput:暗記カードの比率 / The ideal input:Anki ratio (例: 4:1)", last_ratio)
 # 昨日の総レビュー枚数
