@@ -1,5 +1,5 @@
 import streamlit as st
-import os
+from streamlit_javascript import st_javascript
 
 # ===== Convert "hh:mm" string to decimal hours =====
 def time_to_hours(time_str):
@@ -21,23 +21,16 @@ def calculate_new_cards(input_hours, anki_hours, total_cards, due_cards, new_rat
     new_cards = max(safe_min, min(safe_max, new_cards))
     return new_cards
 
-# ===== Load last ratio =====
-if os.path.exists("last_ratio.txt"):
-    last_ratio = open("last_ratio.txt").read().strip()
-else:
-    last_ratio = "4:1"  # 初回デフォルトを Input:Anki = 4:1 に変更
-
 st.title("New Card Limit Calculator / 新規カード上限計算")
 
-# 昨日Inputにかかった時間
+# ===== ブラウザlocalStorageから前回比率を読み込む =====
+last_ratio = st_javascript("return localStorage.getItem('last_ratio') || '4:1';")
+
+# 入力フォーム
 input_time = st.text_input("昨日Inputに使った時間 / Yesterday's Input time (例: 2:00)", "2:00")
-# 今日Ankiにかかった時間
 anki_time = st.text_input("昨日暗記カードにかかった時間 / Yesterday's Anki time (例: 0:30)", "0:30")
-# Input:Anki 比率
 ratio_input = st.text_input("理想のInput:暗記カードの比率 / The ideal input:Anki ratio (例: 4:1)", last_ratio)
-# 昨日の総レビュー枚数
 total_cards = st.number_input("昨日の総レビュー枚数 (新規+復習) / Total cards reviewed yesterday (new + review)", min_value=1, value=10)
-# 今日期限カード
 due_cards = st.number_input("今日が期限のカード枚数 / Cards due today", min_value=0, value=30)
 
 # ===== 計算ボタン =====
@@ -55,6 +48,5 @@ if st.button("Calculate / 計算"):
     if input_hours is not None and anki_hours is not None:
         new_cards = calculate_new_cards(input_hours, anki_hours, total_cards, due_cards, new_ratio=new_ratio)
         st.success(f"Ideal number of new cards: {new_cards}\n推奨新規カード枚数: {new_cards}")
-        # 前回比率を保存
-        with open("last_ratio.txt", "w") as f:
-            f.write(ratio_input)
+        # ブラウザに保存
+        st_javascript(f"localStorage.setItem('last_ratio', '{ratio_input}');")
