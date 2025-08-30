@@ -25,29 +25,36 @@ def calculate_new_cards(input_hours, anki_hours, total_cards, due_cards, new_rat
 if os.path.exists("last_ratio.txt"):
     last_ratio = open("last_ratio.txt").read().strip()
 else:
-    last_ratio = "1:4"
+    last_ratio = "4:1"  # 初回デフォルトを Input:Anki = 4:1 に変更
 
 st.title("New Card Limit Calculator / 新規カード上限計算")
 
+# 昨日Inputにかかった時間
 input_time = st.text_input("昨日Inputにかかった時間 / Yesterday's Input time (例: 4:44)", "4:44")
-anki_time = st.text_input("昨日暗記にかかった時間 / Yesterday's Anki time (例: 1:11)", "1:11")
-ratio_input = st.text_input("Input:暗記の比率 / Input:Anki ratio (例: 1:4)", last_ratio)
+# 今日Ankiにかかった時間
+anki_time = st.text_input("昨日Ankiにかかった時間 / Yesterday's Anki time (例: 1:11)", "1:11")
+# Input:Anki 比率
+ratio_input = st.text_input("Input:Ankiの比率 / Input:Anki ratio (例: 4:1)", last_ratio)
+# 昨日の総レビュー枚数
 total_cards = st.number_input("昨日の総レビュー枚数 (新規+復習) / Total cards reviewed yesterday (new + review)", min_value=1, value=100)
+# 今日期限カード
 due_cards = st.number_input("今日が期限のカード枚数 / Cards due today", min_value=0, value=0)
 
+# ===== 計算ボタン =====
 if st.button("Calculate / 計算"):
     input_hours = time_to_hours(input_time)
     anki_hours = time_to_hours(anki_time)
+    
     try:
         input_part, anki_part = map(float, ratio_input.split(":"))
         new_ratio = anki_part / (input_part + anki_part)
     except:
-        st.error("Invalid ratio format. Example: 1:4")
+        st.error("Invalid ratio format. Example: 4:1")
         new_ratio = 0.25
     
     if input_hours is not None and anki_hours is not None:
         new_cards = calculate_new_cards(input_hours, anki_hours, total_cards, due_cards, new_ratio=new_ratio)
         st.success(f"Ideal number of new cards: {new_cards}\n推奨新規カード枚数: {new_cards}")
-        # Save ratio
+        # 前回比率を保存
         with open("last_ratio.txt", "w") as f:
             f.write(ratio_input)
