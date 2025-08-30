@@ -34,7 +34,7 @@ input_time = st.text_input("昨日Inputにかかった時間 / Yesterday's Input
 # 今日Ankiにかかった時間
 anki_time = st.text_input("昨日Ankiにかかった時間 / Yesterday's Anki time (例: 1:11)", "1:11")
 # Input:Anki 比率
-ratio_input = st.text_input("Input:Ankiの比率 / Input:Anki ratio (例: 4:1)", last_ratio)
+ratio_input = st.text_input("理想のInput:Ankiの比率 / The ideal input:Anki ratio (例: 4:1)", last_ratio)
 # 昨日の総レビュー枚数
 total_cards = st.number_input("昨日の総レビュー枚数 (新規+復習) / Total cards reviewed yesterday (new + review)", min_value=1, value=100)
 # 今日期限カード
